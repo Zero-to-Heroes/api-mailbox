@@ -1,0 +1,55 @@
+{
+	"name": "@firestone-hs/mailbox",
+	"version": "1.0.29",
+	"description": "",
+	"scripts": {
+		"lint": "eslint --color --fix --ext .ts .",
+		"start": "webpack -w --color",
+		"test": "jest",
+		"build": "webpack --env.buildEnv=prod --color",
+		"package": "sam package --template-file template.yaml --s3-bucket com.zerotoheroes.artifact --output-template-file template.packaged.yaml",
+		"deploy": "sam deploy --template-file template.packaged.yaml --stack-name TwitterStack --capabilities CAPABILITY_IAM",
+		"clean": "rm -rf -v dist/*",
+		"full-deploy": "npm run build && npm run package && npm run deploy",
+		"increment-version": "npm --no-git-tag-version version patch && git add . && git commit -m \"increment version\"",
+		"publish-version": "rm -rf dist && tsc && rm -rf dist/node_modules && npm publish --access public"
+	},
+	"repository": {},
+	"author": "",
+	"license": "MIT",
+	"private": false,
+	"main": "dist/model.js",
+	"types": "dist/model.d.ts",
+	"files": [
+		"dist/**/*"
+	],
+	"dependencies": {
+		"@firestone-hs/aws-lambda-utils": "0.0.34",
+		"@firestone-hs/hs-replay-xml-parser": "0.0.78",
+		"@firestone-hs/reference-data": "^1.0.29",
+		"aws-sdk": "^2.1040.0",
+		"jszip": "^3.7.1",
+		"node-fetch": "^2.6.7",
+		"tslib": "^1.9.0",
+		"twitter-api-v2": "^1.12.9"
+	},
+	"devDependencies": {
+		"@types/aws-lambda": "8.10.31",
+		"@types/node": "12.7.4",
+		"@types/node-fetch": "^2.5.2",
+		"@typescript-eslint/eslint-plugin": "^2.1.0",
+		"@typescript-eslint/parser": "^2.1.0",
+		"eslint": "^6.6.0",
+		"eslint-config-prettier": "^6.5.0",
+		"eslint-loader": "^3.0.2",
+		"eslint-plugin-prettier": "^3.1.1",
+		"prettier": "^1.19.1",
+		"ts-loader": "^6.2.1",
+		"ts-node": "^8.5.0",
+		"typescript": "^3.7.2",
+		"uglifyjs-webpack-plugin": "^2.2.0",
+		"webpack": "^4.39.3",
+		"webpack-cli": "^3.3.8",
+		"yaml-cfn": "^0.2.2"
+	}
+}
