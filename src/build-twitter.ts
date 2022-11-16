@@ -17,6 +17,7 @@ export const s3 = new S3();
 export default async (event, context: Context): Promise<any> => {
 	const cleanup = logBeforeTimeout(context);
 	const existingMessages = await getExistingMessages();
+	console.debug('existing messages', existingMessages);
 	const lastMessageId = extractLastMessageId(existingMessages);
 	const newTweets = await runTwitterQuery(`from:ZerotoHeroes_HS #mailbox`, lastMessageId);
 	const newMessages = buildNewMessages(newTweets);
@@ -29,11 +30,18 @@ export default async (event, context: Context): Promise<any> => {
 
 const getExistingMessages = async (): Promise<readonly MailboxMessage[]> => {
 	const messagesStr = await s3.readGzipContent(BUCKET, FILE_KEY);
-	if (!messagesStr?.length) {
-		return [];
+	const info: MailboxMessagesInfo = !messagesStr?.length ? null : JSON.parse(messagesStr);
+	if (!info.messages?.length) {
+		return [
+			{
+				id: null,
+				date: new Date('2022-11-15'),
+				categories: [MailboxMessageCategory.GENERAL],
+				text: `Welcome to your mailbox! <br /> The goal of the mailbox is to give you a way to receive important update about the games, like patch notes, known issues, pack drops, and so on so that you are never caught unanware. Let me know what you think on <a href="https://discord.gg/FhEHn8w" target="_blank">Discord!</a>`,
+			},
+		];
 	}
-	const info: MailboxMessagesInfo = JSON.parse(messagesStr);
-	return (info?.messages ?? []).map(msg => ({
+	return info.messages.map(msg => ({
 		...msg,
 		date: new Date(msg.date),
 	}));

@@ -12,7 +12,6 @@ export const runTwitterQuery = async (query: string, sinceId: string) => {
 	const readOnlyClient = twitterClient.readOnly.v2;
 	const request: Tweetv2SearchParams = {
 		query: query,
-		since_id: sinceId,
 		sort_order: 'recency',
 		'tweet.fields': ['entities', 'created_at', 'referenced_tweets', 'attachments'],
 		'media.fields': ['preview_image_url', 'url', 'alt_text'],
