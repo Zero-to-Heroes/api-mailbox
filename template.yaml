@@ -29,5 +29,5 @@ Resources:
                 LastPeriodTrigger:
                     Type: Schedule
                     Properties:
-                        Schedule: cron(0 * * * ? *) # Every hour
+                        Schedule: cron(*/10 * * * ? *) # Every ten minutes
 

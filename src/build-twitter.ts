@@ -68,9 +68,15 @@ const buildNewMessage = (tweet: TweetV2): MailboxMessage => {
 	}
 	finalText = finalText.replace(/[ ]{2,}/gm, ' ');
 
-	const links = tweet.entities?.urls?.flatMap(url => url.url);
+	const links = tweet.entities?.urls;
+	const expandedLinks = tweet.entities?.urls?.flatMap(url => url.expanded_url);
+
+	// Only remove the links for quoted tweets, that appear after the #mailbox tag
+	const mailboxPosition = tweet.entities.hashtags.find(t => t.tag === 'mailbox')?.end;
 	for (const link of links) {
-		finalText = finalText.replace(link, '');
+		if (link.start > mailboxPosition) {
+			finalText = finalText.replace(link.url, '');
+		}
 	}
 
 	finalText = finalText.trim();
@@ -79,7 +85,7 @@ const buildNewMessage = (tweet: TweetV2): MailboxMessage => {
 		date: new Date(tweet.created_at),
 		text: finalText,
 		categories: categories,
-		links: links,
+		links: expandedLinks,
 	};
 };
 
