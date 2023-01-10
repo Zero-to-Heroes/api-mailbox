@@ -6,7 +6,7 @@ import { Tweetv2SearchParams, TwitterApi } from 'twitter-api-v2';
 
 const secretsManager = new SecretsManager({ region: 'us-west-2' });
 
-export const runTwitterQuery = async (query: string, sinceId: string) => {
+export const runTwitterQuery = async (query: string, sinceId?: string) => {
 	const secret: SecretInfo = await getSecret({ SecretId: 'twitter' });
 	const twitterClient = new TwitterApi(secret.bearerToken);
 	const readOnlyClient = twitterClient.readOnly.v2;

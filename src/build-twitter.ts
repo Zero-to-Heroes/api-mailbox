@@ -16,10 +16,16 @@ export const s3 = new S3();
 // [1]: https://aws.amazon.com/blogs/compute/node-js-8-10-runtime-now-available-in-aws-lambda/
 export default async (event, context: Context): Promise<any> => {
 	const cleanup = logBeforeTimeout(context);
-	const existingMessages = await getExistingMessages();
+	let existingMessages = await getExistingMessages();
 	console.debug('existing messages', existingMessages);
 	const lastMessageId = extractLastMessageId(existingMessages);
-	const newTweets = await runTwitterQuery(`from:ZerotoHeroes_HS #mailbox`, lastMessageId);
+	let newTweets = null;
+	try {
+		newTweets = await runTwitterQuery(`from:ZerotoHeroes_HS #mailbox`, lastMessageId);
+	} catch (e) {
+		newTweets = await runTwitterQuery(`from:ZerotoHeroes_HS #mailbox`);
+		existingMessages = [];
+	}
 	const newMessages = buildNewMessages(newTweets);
 	const allMessages = appendNewMessage(existingMessages, newMessages);
 	const trimmedMessages = trimMessages(allMessages);
@@ -48,7 +54,8 @@ const getExistingMessages = async (): Promise<readonly MailboxMessage[]> => {
 };
 
 const extractLastMessageId = (messages: readonly MailboxMessage[]): string => {
-	return [...messages].sort((a, b) => b.date.getTime() - a.date.getTime()).pop()?.id;
+	const lastMessageId = [...messages].sort((a, b) => b.date.getTime() - a.date.getTime()).pop()?.id;
+	return `${Math.max(+lastMessageId, 1609446961558061056)}`;
 };
 
 const buildNewMessages = (tweets: readonly TweetV2[]): readonly MailboxMessage[] => {
