@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-//Import package
 import { SecretsManager } from 'aws-sdk';
 import { GetSecretValueRequest, GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager';
 import { Tweetv2SearchParams, TwitterApi } from 'twitter-api-v2';
@@ -16,7 +14,7 @@ export const runTwitterQuery = async (query: string, sinceId?: string) => {
 		'tweet.fields': ['entities', 'created_at', 'referenced_tweets', 'attachments'],
 		'media.fields': ['preview_image_url', 'url', 'alt_text'],
 	};
-	if (!!sinceId) {
+	if (sinceId) {
 		request.since_id = sinceId;
 	}
 	console.debug('sending request to twitter', request);
