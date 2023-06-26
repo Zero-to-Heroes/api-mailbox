@@ -24,10 +24,10 @@ Resources:
                 # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
             Tags:
                 LambdaName: cron-build-twitter
-            Events:
-                # Populate the info on the last hour
-                LastPeriodTrigger:
-                    Type: Schedule
-                    Properties:
-                        Schedule: cron(*/10 * * * ? *) # Every ten minutes
+            # Events:
+            #     # Populate the info on the last hour
+            #     LastPeriodTrigger:
+            #         Type: Schedule
+            #         Properties:
+            #             Schedule: cron(*/10 * * * ? *) # Every ten minutes
 
